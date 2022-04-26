@@ -1,7 +1,9 @@
 package main
 import (
+	"os"
 	"flag" 
 	"github.com/platsec-inspector-manager/clients"
+	"github.com/platsec-inspector-manager/security"
 )
 
 func main() {
@@ -27,11 +29,20 @@ func main() {
 		ComparissionOperator: *comparissonOperator,
 		MfaToken: *mfaToken,
 		SessionDuration: 3600,
-
+		SessionName: "inspector",
 	}
 
 	myUserInput.SetDefaultConfig()
 	// Get Session Token
 	stsFactory := factory.NewSTSClientFactory()
 	stsClient := stsFactory(myUserInput.UserConfig)
+	err := security.GetAWSSessionToken(&myUserInput, stsClient)
+	if err != nil {
+		os.Exit(1)
+	}
+	stsServiceFactory := factory.NewSTSClientSessionConfig()
+    err = security.AssumeAccountRole(&myUserInput, stsServiceFactory, myUserInput.AwsAccount)
+	if err!= nil {
+		os.Exit(1)
+	}
 }

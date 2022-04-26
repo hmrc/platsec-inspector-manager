@@ -22,3 +22,23 @@ func GetAWSSessionToken(userCredentials *factory.UserInput, stsClient *sts.Clien
 	userCredentials.TemporaryCredentials.SessionToken = *sessionTokenResult.Credentials.SessionToken
 	return nil
 }
+
+// AssumeAccountRole returns an assumed role
+func AssumeAccountRole(userCredentials *factory.UserInput, factory func(stsCredentials *factory.UserInput) *sts.Client,
+	targetAccount string) error {
+	stsClient := factory(userCredentials)
+	userCredentials.SetRole(targetAccount)
+	assumeRoleResult, err := stsClient.
+		AssumeRole(userCredentials.UserContext, &sts.AssumeRoleInput{
+			DurationSeconds: &userCredentials.SessionDuration,
+			RoleArn:         &userCredentials.ServiceCredentials.AssumedRole,
+			RoleSessionName: &userCredentials.SessionName,
+		})
+	if err != nil {
+		return err
+	}
+	userCredentials.ServiceCredentials.AccessKeyId = *assumeRoleResult.Credentials.AccessKeyId
+	userCredentials.ServiceCredentials.SecretAccessKeyId = *assumeRoleResult.Credentials.SecretAccessKey
+	userCredentials.ServiceCredentials.SessionToken = *assumeRoleResult.Credentials.SessionToken
+	return nil
+}

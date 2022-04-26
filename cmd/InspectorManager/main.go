@@ -1,7 +1,6 @@
 package main
 import (
 	"flag" 
-	"fmt" 
 	"github.com/platsec-inspector-manager/clients"
 )
 
@@ -27,8 +26,12 @@ func main() {
 		FilterType: *filterType,
 		ComparissionOperator: *comparissonOperator,
 		MfaToken: *mfaToken,
+		SessionDuration: 3600,
+
 	}
-	
+
 	myUserInput.SetDefaultConfig()
-	fmt.Printf("%s", myUserInput.AwsAccount)
+	// Get Session Token
+	stsFactory := factory.NewSTSClientFactory()
+	stsClient := stsFactory(myUserInput.UserConfig)
 }

@@ -3,3 +3,6 @@ compile: ./cmd/InspectorManager/main.go
 
 build: compile
 	mv ./cmd/InspectorManager/inspector ./bin
+
+format:./cmd/InspectorManager/main.go
+	gofmt .

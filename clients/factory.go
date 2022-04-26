@@ -21,6 +21,23 @@ type UserInput struct {
 	SessionDuration int32
 	UserConfig aws.Config
 	UserContext context.Context
+	ServiceCredentials ReturnedCredentials
+	TemporaryCredentials Credentials
+}
+
+// ReturnedCredentials holds the client credentials for working with service clients
+type ReturnedCredentials struct {
+	AccessKeyId       string
+	SecretAccessKeyId string
+	SessionToken      string
+	AssumedRole       string
+}
+
+// Credentials holds the session credentials used for client creation
+type Credentials struct {
+	AccessKeyId       string
+	SecretAccessKeyId string
+	SessionToken      string
 }
 
 // SetDefaultConfig loads up the credentials from the .aws folder

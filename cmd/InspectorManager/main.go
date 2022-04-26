@@ -18,7 +18,7 @@ func main() {
 
 	myUserInput := factory.UserInput{
 		AwsAccount: *awsAccount,
-		Usernname: *username,
+		Username: *username,
 		Region: *region,
 		Profile: *profile,
 		Action: *action,

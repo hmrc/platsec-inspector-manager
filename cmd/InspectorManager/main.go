@@ -1,7 +1,9 @@
 package main
-import ("flag" 
-"fmt" 
-"github.com/platsec-inspector-manager/inspectorInput")
+import (
+	"flag" 
+	"fmt" 
+	"github.com/platsec-inspector-manager/clients"
+)
 
 func main() {
 	awsAccount := flag.String("account", "", "AWS account")
@@ -15,7 +17,7 @@ func main() {
 	mfaToken := flag.String("mfa-token", "", "MFA token")
 	flag.Parse()
 
-	myUserInput := inspectorInput.UserInput{
+	myUserInput := factory.UserInput{
 		AwsAccount: *awsAccount,
 		Usernname: *username,
 		Region: *region,
@@ -26,5 +28,7 @@ func main() {
 		ComparissionOperator: *comparissonOperator,
 		MfaToken: *mfaToken,
 	}
+	
+	myUserInput.SetDefaultConfig()
 	fmt.Printf("%s", myUserInput.AwsAccount)
 }

@@ -4,6 +4,7 @@ import (
 	"flag" 
 	"github.com/platsec-inspector-manager/clients"
 	"github.com/platsec-inspector-manager/security"
+	"github.com/platsec-inspector-manager/auditing"
 )
 
 func main() {
@@ -18,7 +19,7 @@ func main() {
 	mfaToken := flag.String("mfa-token", "", "MFA token")
 	flag.Parse()
 
-	myUserInput := factory.UserInput{
+	myUserInput := clients.UserInput{
 		AwsAccount: *awsAccount,
 		Username: *username,
 		Region: *region,
@@ -34,15 +35,19 @@ func main() {
 
 	myUserInput.SetDefaultConfig()
 	// Get Session Token
-	stsFactory := factory.NewSTSClientFactory()
+	stsFactory := clients.NewSTSClientFactory()
 	stsClient := stsFactory(myUserInput.UserConfig)
 	err := security.GetAWSSessionToken(&myUserInput, stsClient)
 	if err != nil {
+		auditing.Log(err.Error())
 		os.Exit(1)
 	}
-	stsServiceFactory := factory.NewSTSClientSessionConfig()
+	stsServiceFactory := clients.NewSTSClientSessionConfig()
     err = security.AssumeAccountRole(&myUserInput, stsServiceFactory, myUserInput.AwsAccount)
 	if err!= nil {
+		auditing.Log(err.Error())
 		os.Exit(1)
 	}
+	inspectorFactory := clients.NewInspectorClientFactory()
+    inspectorClient := inspectorFactory(myUserInput.UserConfig, *&myUserInput)
 }

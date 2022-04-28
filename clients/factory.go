@@ -1,4 +1,4 @@
-package factory
+package clients
 
 import (
 	"fmt"
@@ -7,6 +7,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/sts"
 	"github.com/aws/aws-sdk-go-v2/credentials"
+	"github.com/aws/aws-sdk-go-v2/service/inspector2"
 )
 
 type UserInput struct {
@@ -76,4 +77,15 @@ func NewSTSClientSessionConfig() func(stsCredentials *UserInput) *sts.Client {
 func (u *UserInput) SetRole(targetAccount string) {
     roleToAssume := fmt.Sprintf("arn:aws:iam::%s:role/hrk-role-inspector-reporter", targetAccount)
     u.ServiceCredentials.AssumedRole = roleToAssume
+}
+
+// NewInspectorClientFactory returns an Inspector client generated from default config
+func NewInspectorClientFactory() func(cfg aws.Config, stsCredentials UserInput) *inspector2.Client {
+    return func(cfg aws.Config, stsCredentials UserInput) *inspector2.Client {
+        return inspector2.New(inspector2.Options{
+            Region: stsCredentials.Region,
+            Credentials: aws.NewCredentialsCache(credentials.NewStaticCredentialsProvider(stsCredentials.ServiceCredentials.AccessKeyId,
+                stsCredentials.ServiceCredentials.SecretAccessKeyId, stsCredentials.ServiceCredentials.SessionToken)),
+        })
+    }
 }

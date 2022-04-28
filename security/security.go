@@ -6,7 +6,7 @@ import(
 )
 
 // GetAWSSessionToken gets a valid aws session token.
-func GetAWSSessionToken(userCredentials *factory.UserInput, stsClient *sts.Client) error {
+func GetAWSSessionToken(userCredentials *clients.UserInput, stsClient *sts.Client) error {
 	sessionTokenResult, err := stsClient.GetSessionToken(userCredentials.UserContext, &sts.GetSessionTokenInput{
 		TokenCode:       &userCredentials.MfaToken,
 		DurationSeconds: &userCredentials.SessionDuration,
@@ -24,7 +24,7 @@ func GetAWSSessionToken(userCredentials *factory.UserInput, stsClient *sts.Clien
 }
 
 // AssumeAccountRole returns an assumed role
-func AssumeAccountRole(userCredentials *factory.UserInput, factory func(stsCredentials *factory.UserInput) *sts.Client,
+func AssumeAccountRole(userCredentials *clients.UserInput, factory func(stsCredentials *clients.UserInput) *sts.Client,
 	targetAccount string) error {
 	stsClient := factory(userCredentials)
 	userCredentials.SetRole(targetAccount)

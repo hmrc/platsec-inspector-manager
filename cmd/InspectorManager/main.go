@@ -5,6 +5,8 @@ import (
 	"github.com/platsec-inspector-manager/clients"
 	"github.com/platsec-inspector-manager/security"
 	"github.com/platsec-inspector-manager/auditing"
+	"github.com/platsec-inspector-manager/inspector"
+	"github.com/aws/aws-sdk-go-v2/service/inspector2/types"
 )
 
 func main() {
@@ -15,8 +17,9 @@ func main() {
 	action := flag.String("action", "SUPRESS", "action to apply")
 	filterName := flag.String("filter-name", "", "filter name")
 	filterType := flag.String("filter-type", "cve", "type of filter")
-	comparissonOperator := flag.String("comparisson-opertaor", "EQUALS", "comaprsison operator")
+	comparisonOperator := flag.String("comparisson-opertaor", "EQUALS", "comaprsison operator")
 	mfaToken := flag.String("mfa-token", "", "MFA token")
+	vulnerabilityId := flag.String("vulnerability-id", "", "vulnerability ID (CVE-2021-3711)")
 	flag.Parse()
 
 	myUserInput := clients.UserInput{
@@ -27,8 +30,9 @@ func main() {
 		Action: *action,
 		FilterName: *filterName,
 		FilterType: *filterType,
-		ComparissionOperator: *comparissonOperator,
+		ComparisonOperator: *comparisonOperator,
 		MfaToken: *mfaToken,
+		VulnerabilityId: *vulnerabilityId,
 		SessionDuration: 3600,
 		SessionName: "inspector",
 	}
@@ -50,4 +54,11 @@ func main() {
 	}
 	inspectorFactory := clients.NewInspectorClientFactory()
     inspectorClient := inspectorFactory(myUserInput.UserConfig, *&myUserInput)
+	filterPipeline := inspector.InspectorFilterPipeline{
+        AWSAccounts: []string{myUserInput.AwsAccount},
+        Action:      types.FilterAction(*action),
+        FilterName:  myUserInput.FilterName,
+        CVETitles:   []string{myUserInput.VulnerabilityId},
+    }
+	filterPipeline.PopulateAccountFilters(myUserInput.ComparisonOperator).CreateAccountFilterRequest().ProcessFilterRequest(inspectorClient, myUserInput.UserContext)
 }

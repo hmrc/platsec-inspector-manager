@@ -3,6 +3,8 @@ package inspector
 import (
 	"github.com/aws/aws-sdk-go-v2/service/inspector2"
 	"github.com/aws/aws-sdk-go-v2/service/inspector2/types"
+    "fmt"
+    "context"
 )
 
 type InspectorFilterPipeline struct {
@@ -47,5 +49,31 @@ func (i *InspectorFilterPipeline) PopulateAccountFilters(comparisonOperator stri
         }
     }
     i.AccountFilters = accountFilters
+    return i
+}
+
+// CreateAccountFilterRequest adds the filters to Inspector
+func (i *InspectorFilterPipeline) CreateAccountFilterRequest() *InspectorFilterPipeline {
+    filterRequest := inspector2.CreateFilterInput{}
+    filterRequest.Action = i.Action
+    filterRequest.Name = &i.FilterName
+    if len(i.AccountFilters) > 0 {
+        f := types.FilterCriteria{AwsAccountId: i.AccountFilters}
+        filterRequest.FilterCriteria = &f
+    }
+    i.FilterRequest = &filterRequest
+    return i
+}
+
+// ProcessFilterRequest processes the filter request to inspector
+func (i *InspectorFilterPipeline) ProcessFilterRequest(client *inspector2.Client,
+    ctx context.Context) *InspectorFilterPipeline {
+    fmt.Printf("Processing Filter Request")
+    response, err := client.CreateFilter(ctx, i.FilterRequest)
+    if err != nil {
+        i.FilterError = err
+    } else {
+        i.FilterResponse = response
+    }
     return i
 }

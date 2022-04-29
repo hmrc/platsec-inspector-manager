@@ -18,8 +18,9 @@ type UserInput struct {
 	Action string
 	FilterName string
 	FilterType string
-	ComparissionOperator string
+	ComparisonOperator string
 	MfaToken string
+	VulnerabilityId string 
 	SessionDuration int32
 	UserConfig aws.Config
 	UserContext context.Context

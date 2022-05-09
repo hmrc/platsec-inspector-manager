@@ -6,3 +6,6 @@ build: compile
 
 format:./cmd/InspectorManager/main.go
 	gofmt .
+
+test: ./inspector/inspector2_test.go
+	go test ./inspector

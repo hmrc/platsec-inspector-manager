@@ -17,7 +17,7 @@ func main() {
 	action := flag.String("action", "SUPRESS", "action to apply")
 	filterName := flag.String("filter-name", "", "filter name")
 	filterType := flag.String("filter-type", "cve", "type of filter")
-	comparisonOperator := flag.String("comparisson-opertaor", "EQUALS", "comaprsison operator")
+	comparisonOperator := flag.String("comparison-operator", "EQUALS", "comparison operator")
 	mfaToken := flag.String("mfa-token", "", "MFA token")
 	vulnerabilityId := flag.String("vulnerability-id", "", "vulnerability ID (CVE-2021-3711)")
 	flag.Parse()
@@ -41,19 +41,24 @@ func main() {
 	// Get Session Token
 	stsFactory := clients.NewSTSClientFactory()
 	stsClient := stsFactory(myUserInput.UserConfig)
+
 	err := security.GetAWSSessionToken(&myUserInput, stsClient)
+
 	if err != nil {
 		auditing.Log(err.Error())
 		os.Exit(1)
 	}
+
 	stsServiceFactory := clients.NewSTSClientSessionConfig()
     err = security.AssumeAccountRole(&myUserInput, stsServiceFactory, myUserInput.AwsAccount)
 	if err!= nil {
 		auditing.Log(err.Error())
 		os.Exit(1)
 	}
+
 	inspectorFactory := clients.NewInspectorClientFactory()
     inspectorClient := inspectorFactory(myUserInput.UserConfig, *&myUserInput)
+
 	filterPipeline := inspector.InspectorFilterPipeline{
         AWSAccounts: []string{myUserInput.AwsAccount},
         Action:      types.FilterAction(*action),

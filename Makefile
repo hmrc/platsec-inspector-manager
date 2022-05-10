@@ -4,8 +4,12 @@ compile: ./cmd/InspectorManager/main.go
 build: compile
 	mv ./cmd/InspectorManager/inspector ./bin
 
-format:./cmd/InspectorManager/main.go
+format: ./cmd/InspectorManager/main.go
 	gofmt .
 
 test: ./inspector/inspector2_test.go
 	go test ./inspector
+
+test-coverage: ./inspector
+	go test -coverprofile cover.out ./...
+	go tool cover -html=cover.out

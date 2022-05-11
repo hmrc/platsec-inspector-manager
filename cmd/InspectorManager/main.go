@@ -67,3 +67,36 @@ func main() {
     }
 	filterPipeline.PopulateAccountFilters(myUserInput.ComparisonOperator).CreateAccountFilterRequest().ProcessFilterRequest(inspectorClient, myUserInput.UserContext)
 }
+
+// TODO: refactor below and add switch statement 
+
+/* 	if logonCredentials.FilterType == "cve" {
+		filterPipeline.PopulateTitleFilters(logonCredentials.ComparisonOperator).CreateVulnerabilityIdFilterRequest().ProcessFilterRequest(inspectorClient, logonCredentials.UserContext)
+	} 
+	
+	elif logonCredentials.FilterType == "awsAccounts" {
+		filterPipeline.PopulateAccountFilters(logonCredentials.ComparisonOperator).CreateAccountFilterRequest().ProcessFilterRequest(inspectorClient, logonCredentials.UserContext)
+	}
+
+	elif logonCredentials.FilterType == "typeCategory" {
+		filterPipeline.PopulateTypeCategoryFilters(logonCredentials.ComparisonOperator).CreateTypeCategoryFilterRequest().ProcessFilterRequest(inspectorClient, logonCredentials.UserContext)
+	}
+	else filterPipeline.FilterError != nil {
+		fmt.Printf("Error processing pipeline %s", filterPipeline.FilterError.Error())
+		auditing.Log(filterPipeline.FilterError.Error())
+	}
+
+	fmt.Printf("Filter Output %s", *filterPipeline.FilterResponse.Arn)
+} */
+
+/*
+switch (logonCredentials.FilterType){
+case "cve":
+	filterPipeline.PopulateTitleFilters(logonCredentials.ComparisonOperator).CreateVulnerabilityIdFilterRequest().ProcessFilterRequest(inspectorClient, logonCredentials.UserContext)
+case "awsAccounts":
+	filterPipeline.PopulateAccountFilters(logonCredentials.ComparisonOperator).CreateAccountFilterRequest().ProcessFilterRequest(inspectorClient, logonCredentials.UserContext)
+case "typeCategory":
+	filterPipeline.PopulateTypeCategoryFilters(logonCredentials.ComparisonOperator).CreateTypeCategoryFilterRequest().ProcessFilterRequest(inspectorClient, logonCredentials.UserContext)
+default: 
+	fmt.Println("no filter types matched")
+*/

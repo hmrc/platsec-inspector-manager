@@ -8,15 +8,17 @@ import (
 )
 
 type InspectorFilterPipeline struct {
-	AWSAccounts     []string
-	CVETitles       []string
-	AccountFilters  []types.StringFilter
-	CVETitleFilters []types.StringFilter
-	FilterRequest   *inspector2.CreateFilterInput
-	FilterResponse  *inspector2.CreateFilterOutput
-	Action          types.FilterAction
-	FilterName      string
-	FilterError     error
+	AWSAccounts        []string
+	CVETitles          []string
+	TypeCategory        string
+	AccountFilters     []types.StringFilter
+	CVETitleFilters    []types.StringFilter
+	TypeCategoryFilters []types.StringFilter
+	FilterRequest      *inspector2.CreateFilterInput
+	FilterResponse     *inspector2.CreateFilterOutput
+	Action             types.FilterAction
+	FilterName         string
+	FilterError        error
 }
 
 // getFilterOnCVETitle creates a filter for inspector
@@ -35,6 +37,14 @@ func getFilterOnAWSAccount(awsAccount string, accountComparisonOperator string) 
 	filterType := types.StringFilter{
 		Comparison: types.StringComparison(accountComparisonOperator),
 		Value:      &awsAccount,
+	}
+	return filterType
+}
+
+func getFilterOnTypeCategory(TypeCategory string, typeCategoryComparisonOperator string) types.StringFilter {
+	filterType := types.StringFilter{
+		Comparison: types.StringComparison(typeCategoryComparisonOperator),
+		Value:      &TypeCategory,
 	}
 	return filterType
 }
@@ -63,6 +73,16 @@ func (i *InspectorFilterPipeline) PopulateTitleFilters(comparisonOperator string
 	return i
 }
 
+func (i *InspectorFilterPipeline) PopulateTypeCategoryFilters(comparisonOperator string) *InspectorFilterPipeline {
+	var typeCategoryFilters []types.StringFilter
+	if i.TypeCategory != "" {
+		typeCategoryFilter := getFilterOnTypeCategory(i.TypeCategory, comparisonOperator)
+		typeCategoryFilters[0] = typeCategoryFilter
+	}
+	i.TypeCategoryFilters = typeCategoryFilters
+	return i
+}
+
 // CreateAccountFilterRequest adds the filters to Inspector
 func (i *InspectorFilterPipeline) CreateAccountFilterRequest() *InspectorFilterPipeline {
 	filterRequest := inspector2.CreateFilterInput{}
@@ -83,6 +103,18 @@ func (i *InspectorFilterPipeline) CreateVulnerabilityIdFilterRequest() *Inspecto
 	filterRequest.Name = &i.FilterName
 	if len(i.CVETitles) > 0 {
 		f := types.FilterCriteria{VulnerabilityId: i.CVETitleFilters}
+		filterRequest.FilterCriteria = &f
+	}
+	i.FilterRequest = &filterRequest
+	return i
+}
+// CreateTypeCategoryFilterRequest sends finding type filter requests to Inspector
+func (i *InspectorFilterPipeline) CreateTypeCategoryFilterRequest() *InspectorFilterPipeline {
+	filterRequest := inspector2.CreateFilterInput{}
+	filterRequest.Action = i.Action
+	filterRequest.Name = &i.FilterName
+	if len(i.TypeCategory) > 0 {
+		f := types.FilterCriteria{FindingType: i.TypeCategoryFilters}
 		filterRequest.FilterCriteria = &f
 	}
 	i.FilterRequest = &filterRequest

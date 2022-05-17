@@ -76,7 +76,8 @@ func NewSTSClientSessionConfig() func(stsCredentials *UserInput) *sts.Client {
 
 //
 func (u *UserInput) SetRole(targetAccount string) {
-    roleToAssume := fmt.Sprintf("arn:aws:iam::%s:role/hrk-role-inspector-reporter", targetAccount)
+	testCloudTrailAccount := "118949222011"
+    roleToAssume := fmt.Sprintf("arn:aws:iam::%s:role/RoleSecurityAdministrator", testCloudTrailAccount)
     u.ServiceCredentials.AssumedRole = roleToAssume
 }
 

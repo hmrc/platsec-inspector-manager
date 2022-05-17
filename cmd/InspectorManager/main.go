@@ -1,6 +1,8 @@
 package main
 import (
+	"fmt"
 	"os"
+	"context"
 	"flag" 
 	"github.com/platsec-inspector-manager/clients"
 	"github.com/platsec-inspector-manager/security"
@@ -14,7 +16,7 @@ func main() {
 	username := flag.String("username", "", "AWS username")
 	region := flag.String("region", "eu-west-2", "AWS region")
 	profile := flag.String("profile", "", "AWS profile")
-	action := flag.String("action", "SUPRESS", "action to apply")
+	action := flag.String("action", "SUPPRESS", "action to apply")
 	filterName := flag.String("filter-name", "", "filter name")
 	filterType := flag.String("filter-type", "cve", "type of filter")
 	comparisonOperator := flag.String("comparison-operator", "EQUALS", "comparison operator")
@@ -25,6 +27,7 @@ func main() {
 	myUserInput := clients.UserInput{
 		AwsAccount: *awsAccount,
 		Username: *username,
+		UserContext: context.TODO(),
 		Region: *region,
 		Profile: *profile,
 		Action: *action,
@@ -66,8 +69,13 @@ func main() {
         CVETitles:   []string{myUserInput.VulnerabilityId},
     }
 	filterPipeline.PopulateAccountFilters(myUserInput.ComparisonOperator).CreateAccountFilterRequest().ProcessFilterRequest(inspectorClient, myUserInput.UserContext)
+	if filterPipeline.FilterError != nil {
+		fmt.Printf("Error processing pipeline %s", filterPipeline.FilterError.Error())
+		auditing.Log(filterPipeline.FilterError.Error())
+		fmt.Printf("Filter Output %s", *filterPipeline.FilterResponse.Arn)
+	}	
 }
-
+	
 // TODO: refactor below and add switch statement 
 
 /* 	if logonCredentials.FilterType == "cve" {

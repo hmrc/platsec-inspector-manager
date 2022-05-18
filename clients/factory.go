@@ -8,7 +8,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/sts"
 	"github.com/aws/aws-sdk-go-v2/credentials"
 	"github.com/aws/aws-sdk-go-v2/service/inspector2"
-	"github.com/spf13/viper"
+	//"github.com/spf13/viper"
 )
 
 type UserInput struct {

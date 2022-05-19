@@ -3,7 +3,8 @@ import (
 	"fmt"
 	"os"
 	"context"
-	"flag" 
+	"flag"
+	"configmanagement"
 	"github.com/platsec-inspector-manager/clients"
 	"github.com/platsec-inspector-manager/security"
 	"github.com/platsec-inspector-manager/auditing"
@@ -23,6 +24,10 @@ func main() {
 	mfaToken := flag.String("mfa-token", "", "MFA token")
 	vulnerabilityId := flag.String("vulnerability-id", "", "vulnerability ID (CVE-2021-3711)")
 	flag.Parse()
+
+	configValues := configmanagement.initConfig()
+
+
 
 	myUserInput := clients.UserInput{
 		AwsAccount: *awsAccount,

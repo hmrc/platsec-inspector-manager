@@ -1,35 +1,37 @@
-package main
+package configmanagement
 
 import (
 	"fmt"
 	"github.com/spf13/viper"
 	"os"
-	"errors"
 )
 
-func main() {
+type InspectorConfig struct {
+	Account string
+	RoleName string 
+}
+
+
+func initConfig() InspectorConfig {
 
 	viper.SetConfigName("config") //name for config file
 	viper.SetConfigType("yaml") //file extension type 
-	viper.AddConfigPath("./")  
+	viper.AddConfigPath("../")  
 	viper.ReadInConfig()
 
 	if err := viper.ReadInConfig(); err != nil {
 		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
 			fmt.Println("error config file not found: default \n", err)
 		}
-
 		
 	if err != nil { // Handle errors reading the config file
 		fmt.Println("fatal error config file: default \n", err)
         os.Exit(1)
 	}
+} 
+
+return InspectorConfig {
+	Account := viper.GetString("aws.account")
+	RoleName := viper.GetString("aws.rolename")
 }
-
-	account := viper.GetString("aws.account")
-	roleName := viper.GetString("aws.rolename")
-
-	fmt.Println("---------- Example ----------")
-	fmt.Println("aws.account :",account)
-	fmt.Println("aws.rolename :",roleName)
 }

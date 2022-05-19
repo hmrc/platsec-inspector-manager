@@ -4,7 +4,7 @@ import (
 	"os"
 	"context"
 	"flag"
-	"github.com/platsec-inspector-manager/configmanagement/viper"
+	"github.com/platsec-inspector-manager/configmanagement"
 	"github.com/platsec-inspector-manager/clients"
 	"github.com/platsec-inspector-manager/security"
 	"github.com/platsec-inspector-manager/auditing"
@@ -25,7 +25,7 @@ func main() {
 	vulnerabilityId := flag.String("vulnerability-id", "", "vulnerability ID (CVE-2021-3711)")
 	flag.Parse()
 
-	configValues := configmanagement.initConfig()
+	configValues := configmanagement.InitConfig()
 
 
 

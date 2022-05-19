@@ -1,7 +1,12 @@
 
-# platsec-inspector-manager
+### platsec-inspector-manager
+PlatSec Inspector Manager is Golang command line tool that enables PlatSec Team members 
+to create suppression rules in AWS Inspector. 
 
-This is a placeholder README.md for a new repository
+Platform Teams can then apply the suppression rules created by PlatSec to Inspector 
+findings and filter out what is not relevant to them depending on their use case. 
+
+A suppression rule can be made up of multiple filters such as AWS Account, CVE, Type.
 
 ### License
 

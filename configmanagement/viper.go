@@ -12,7 +12,7 @@ type InspectorConfig struct {
 }
 
 
-func initConfig() InspectorConfig {
+func InitConfig() InspectorConfig {
 
 	viper.SetConfigName("config") //name for config file
 	viper.SetConfigType("yaml") //file extension type 
@@ -30,8 +30,9 @@ func initConfig() InspectorConfig {
 	}
 } 
 
-return InspectorConfig {
-	Account := viper.GetString("aws.account")
-	RoleName := viper.GetString("aws.rolename")
+return InspectorConfig{
+	Account: viper.GetString("aws.account"),
+	RoleName: viper.GetString("aws.rolename"),
 }
+
 }

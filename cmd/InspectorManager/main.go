@@ -4,7 +4,7 @@ import (
 	"os"
 	"context"
 	"flag"
-	"configmanagement"
+	"github.com/platsec-inspector-manager/configmanagement/viper"
 	"github.com/platsec-inspector-manager/clients"
 	"github.com/platsec-inspector-manager/security"
 	"github.com/platsec-inspector-manager/auditing"
@@ -34,6 +34,7 @@ func main() {
 		Username: *username,
 		UserContext: context.TODO(),
 		Region: *region,
+		RoleName: configValues.RoleName,
 		Profile: *profile,
 		Action: *action,
 		FilterName: *filterName,

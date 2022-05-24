@@ -10,7 +10,7 @@ import (
 type InspectorFilterPipeline struct {
 	AWSAccounts        []string
 	CVETitles          []string
-	TypeCategory        string
+	TypeCategory       string
 	AccountFilters     []types.StringFilter
 	CVETitleFilters    []types.StringFilter
 	TypeCategoryFilters []types.StringFilter
@@ -51,12 +51,11 @@ func getFilterOnTypeCategory(TypeCategory string, typeCategoryComparisonOperator
 
 func (i *InspectorFilterPipeline) PopulateAccountFilters(comparisonOperator string) *InspectorFilterPipeline {
 	var accountFilters []types.StringFilter
-	if len(i.AWSAccounts) > 0 {
 		for _, awsAccount := range i.AWSAccounts {
 			accountFilter := getFilterOnAWSAccount(awsAccount, comparisonOperator)
 			accountFilters = append(accountFilters, accountFilter)
 		}
-	}
+
 	i.AccountFilters = accountFilters
 	return i
 }

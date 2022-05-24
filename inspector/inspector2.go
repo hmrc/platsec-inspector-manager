@@ -51,7 +51,6 @@ func getFilterOnTypeCategory(TypeCategory string, typeCategoryComparisonOperator
 
 func (i *InspectorFilterPipeline) PopulateAccountFilters(comparisonOperator string) *InspectorFilterPipeline {
 	var accountFilters []types.StringFilter
-	if len(i.AWSAccounts) > 0 {
 		for _, awsAccount := range i.AWSAccounts {
 			accountFilter := getFilterOnAWSAccount(awsAccount, comparisonOperator)
 			accountFilters = append(accountFilters, accountFilter)

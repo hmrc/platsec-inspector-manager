@@ -30,10 +30,28 @@ func TestInspectorFilterPipeline_PopulateTitleFilters(t *testing.T) {
 		t.Errorf("Error populating title filters %s", filterPipeline.FilterError.Error())
 	}
 	if len(filterPipeline.CVETitleFilters) != 1 {
-		t.Errorf("Error populating account filters expecting 1 got %d", len(filterPipeline.CVETitles))
+		t.Errorf("Error populating CVETitle filters expecting 1 got %d", len(filterPipeline.CVETitles))
 	}
 	if *filterPipeline.CVETitleFilters[0].Value != "CVE-12345" {
-		t.Errorf("Error populating account filters account expecting CVE-12345 got %s",
+		t.Errorf("Error populating CVETitle filters expecting CVE-12345 got %s",
 			*filterPipeline.CVETitleFilters[0].Value)
 	}
+}
+
+func TestInspectorFilterPipeline_PopulateTypeCategoryFilters(t *testing.T) {
+	filterPipeline := InspectorFilterPipeline{
+		TypeCategory : "Package Vulnerability",
+	}
+	fmt.Println(filterPipeline.TypeCategory)
+	filterPipeline.PopulateTypeCategoryFilters("EQUALS")
+	/* if filterPipeline.FilterError != nil {
+		t.Errorf("Error populating type filters %s", filterPipeline.FilterError.Error())
+	}
+	if len(filterPipeline.TypeCategoryFilters) != 1 {
+		t.Errorf("Error populating type filters expecting 1 got %d", len(filterPipeline.TypeCategoryFilters))
+	}
+	if *filterPipeline.TypeCategoryFilters[0].Value != "Package Vulnerability" {
+		t.Errorf("Error populating type filters expecting Package Vulnerability got %s",
+			*filterPipeline.TypeCategoryFilters[0].Value)
+	} */
 }

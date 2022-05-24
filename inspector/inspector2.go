@@ -55,7 +55,7 @@ func (i *InspectorFilterPipeline) PopulateAccountFilters(comparisonOperator stri
 			accountFilter := getFilterOnAWSAccount(awsAccount, comparisonOperator)
 			accountFilters = append(accountFilters, accountFilter)
 		}
-	}
+	
 	i.AccountFilters = accountFilters
 	return i
 }

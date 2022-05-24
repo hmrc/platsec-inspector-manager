@@ -34,6 +34,7 @@ func main() {
 		Username: *username,
 		UserContext: context.TODO(),
 		Region: *region,
+		Account: configValues.Account,
 		RoleName: configValues.RoleName,
 		Profile: *profile,
 		Action: *action,

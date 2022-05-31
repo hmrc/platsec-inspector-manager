@@ -27,8 +27,6 @@ func main() {
 
 	configValues := configmanagement.InitConfig()
 
-
-
 	myUserInput := clients.UserInput{
 		AwsAccount: *awsAccount,
 		Username: *username,

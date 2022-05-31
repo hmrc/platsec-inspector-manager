@@ -1,8 +1,16 @@
 package inspector
 
 import (
+	"context"
+	"github.com/aws/aws-sdk-go-v2/service/inspector2"
 	"testing"
 )
+
+type mockCreateFilterAPI func(ctx context.Context, params *inspector2.CreateFilterInput, optFns ...func(*inspector2.Options)) (*inspector2.CreateFilterOutput, error)
+
+func (m mockCreateFilterAPI) CreateFilter(ctx context.Context, params *inspector2.CreateFilterInput, optFns ...func(*inspector2.Options)) (*inspector2.CreateFilterOutput, error) {
+	return m(ctx, params, optFns...)
+}
 
 func TestInspectorFilterPipeline_PopulateAccountFilters(t *testing.T) {
 	filterPipeline := InspectorFilterPipeline{

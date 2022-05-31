@@ -7,18 +7,24 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/inspector2/types"
 )
 
+type Inspector2CreateFilterAPI interface {
+	CreateFilter(ctx context.Context,
+		params *inspector2.CreateFilterInput,
+		optFns ...func(*inspector2.Options)) (*inspector2.CreateFilterOutput, error)
+}
+
 type InspectorFilterPipeline struct {
-	AWSAccounts        []string
-	CVETitles          []string
+	AWSAccounts         []string
+	CVETitles           []string
 	TypeCategory        string
-	AccountFilters     []types.StringFilter
-	CVETitleFilters    []types.StringFilter
+	AccountFilters      []types.StringFilter
+	CVETitleFilters     []types.StringFilter
 	TypeCategoryFilters []types.StringFilter
-	FilterRequest      *inspector2.CreateFilterInput
-	FilterResponse     *inspector2.CreateFilterOutput
-	Action             types.FilterAction
-	FilterName         string
-	FilterError        error
+	FilterRequest       *inspector2.CreateFilterInput
+	FilterResponse      *inspector2.CreateFilterOutput
+	Action              types.FilterAction
+	FilterName          string
+	FilterError         error
 }
 
 // getFilterOnCVETitle creates a filter for inspector
@@ -108,6 +114,7 @@ func (i *InspectorFilterPipeline) CreateVulnerabilityIdFilterRequest() *Inspecto
 	i.FilterRequest = &filterRequest
 	return i
 }
+
 // CreateTypeCategoryFilterRequest sends finding type filter requests to Inspector
 func (i *InspectorFilterPipeline) CreateTypeCategoryFilterRequest() *InspectorFilterPipeline {
 	filterRequest := inspector2.CreateFilterInput{}
@@ -122,10 +129,10 @@ func (i *InspectorFilterPipeline) CreateTypeCategoryFilterRequest() *InspectorFi
 }
 
 // ProcessFilterRequest processes the filter request to inspector
-func (i *InspectorFilterPipeline) ProcessFilterRequest(client *inspector2.Client,
+func (i *InspectorFilterPipeline) ProcessFilterRequest(api Inspector2CreateFilterAPI,
 	ctx context.Context) *InspectorFilterPipeline {
 	fmt.Printf("Processing Filter Request")
-	response, err := client.CreateFilter(ctx, i.FilterRequest)
+	response, err := api.CreateFilter(ctx, i.FilterRequest)
 	if err != nil {
 		i.FilterError = err
 	} else {

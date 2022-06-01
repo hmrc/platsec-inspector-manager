@@ -45,3 +45,8 @@ func TestInspectorFilterPipeline_PopulateTitleFilters(t *testing.T) {
 			*filterPipeline.CVETitleFilters[0].Value)
 	}
 }
+
+// TesAWSCreateFilter tests the API call to the Inspector Clients CreateFilter function
+func TestAWSCreateFilter (t *testing.T){
+
+}

@@ -47,9 +47,9 @@ func getFilterOnAWSAccount(awsAccount string, accountComparisonOperator string) 
 	return filterType
 }
 
-func getFilterOnTypeCategory(TypeCategory string, typeCategoryComparisonOperator string) types.StringFilter {
+func getFilterOnTypeCategory(TypeCategory string, TypeCategoryComparisonOperator string) types.StringFilter {
 	filterType := types.StringFilter{
-		Comparison: types.StringComparison(typeCategoryComparisonOperator),
+		Comparison: types.StringComparison(TypeCategoryComparisonOperator),
 		Value:      &TypeCategory,
 	}
 	return filterType

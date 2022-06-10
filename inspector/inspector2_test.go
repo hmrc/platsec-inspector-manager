@@ -3,9 +3,11 @@ package inspector
 import (
 	"context"
 	"github.com/aws/aws-sdk-go-v2/service/inspector2"
+	"github.com/aws/aws-sdk-go-v2/service/inspector2/types"
 	"testing"
 )
 
+// mockCreateFilterAPI is the function definition that implements the interface
 type mockCreateFilterAPI func(ctx context.Context, params *inspector2.CreateFilterInput, optFns ...func(*inspector2.Options)) (*inspector2.CreateFilterOutput, error)
 
 
@@ -16,6 +18,31 @@ func (m mockCreateFilterAPI) CreateFilter(ctx context.Context, params *inspector
 	}
 	return output, nil
 }
+
+func TestGetFilterOnTypeCategory (t *testing.T){
+	expectedValue := "Package Vulnerability"
+	testCases:= []struct{
+		name string
+		typeCategory string
+		typeCategoryComparisonOperator string
+		expected types.StringFilter
+	}{
+		{
+			name: "TestEqualsSuccess",
+			typeCategory: "Package Vulnerability",
+			typeCategoryComparisonOperator: "EQUALS",
+			expected: types.StringFilter{Comparison: "EQUALS",Value: &expectedValue},
+		},
+	}
+
+	for _, tc := range testCases{
+		actual := getFilterOnTypeCategory(tc.typeCategory,tc.typeCategoryComparisonOperator)
+		if *actual.Value != *tc.expected.Value {
+			t.Errorf("Error expected %s but got %s",*tc.expected.Value,*actual.Value)
+		}
+	}
+}
+
 
 func TestInspectorFilterPipeline_PopulateAccountFilters(t *testing.T) {
 	filterPipeline := InspectorFilterPipeline{
@@ -68,3 +95,21 @@ func TestAWSCreateFilter (t *testing.T){
     	t.Errorf("Error unexpected ARN expecting %s got %s", expectedARN,*testPipeline.FilterResponse.Arn)
 	}
 }
+
+// TestCreateTypeCategoryFilterRequest test creation of
+/*
+func TestCreateTypeCategoryFilterRequest(t *testing.T){
+	categoryTypes := getFilterOnTypeCategory("","EQUALS")
+    testCases := []struct {
+    	name string
+    	input InspectorFilterPipeline
+    	want inspector2.CreateFilterInput
+	}{
+		{
+			name: "Test",
+			input: InspectorFilterPipeline{FilterName: "TestCategoryTypeFilter",Action: "SUPPRESS",TypeCategoryFilters: categoryTypes},
+			want: inspector2.CreateFilterInput{},
+		},
+	}
+}
+ */

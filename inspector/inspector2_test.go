@@ -113,3 +113,24 @@ func TestCreateTypeCategoryFilterRequest(t *testing.T){
 	}
 }
  */
+
+func TestCreateVulnerabilityIdFilterRequest(t *testing.T){
+	testCases := []struct {
+		name string
+		input InspectorFilterPipeline
+		want inspector2.CreateFilterInput
+	}{
+		{
+			name: "Test",
+			input: InspectorFilterPipeline{FilterName: "TestCategoryTypeFilter",Action: "SUPPRESS",CVETitles: []string{"CVE12345"}},
+			want: inspector2.CreateFilterInput{Action: types.FilterActionSuppress},
+		},
+	}
+
+	for _, tc := range testCases {
+		actual := tc.input.CreateVulnerabilityIdFilterRequest()
+		if actual.Action != tc.want.Action{
+			t.Errorf("Wanted %s got %s",tc.want.Action,actual.Action)
+		}
+	}
+}

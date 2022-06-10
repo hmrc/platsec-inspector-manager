@@ -8,8 +8,13 @@ import (
 
 type mockCreateFilterAPI func(ctx context.Context, params *inspector2.CreateFilterInput, optFns ...func(*inspector2.Options)) (*inspector2.CreateFilterOutput, error)
 
+
 func (m mockCreateFilterAPI) CreateFilter(ctx context.Context, params *inspector2.CreateFilterInput, optFns ...func(*inspector2.Options)) (*inspector2.CreateFilterOutput, error) {
-	return m(ctx, params, optFns...)
+	testARN := "mytestARN"
+	output := &inspector2.CreateFilterOutput{
+		Arn: &testARN,
+	}
+	return output, nil
 }
 
 func TestInspectorFilterPipeline_PopulateAccountFilters(t *testing.T) {
@@ -48,5 +53,18 @@ func TestInspectorFilterPipeline_PopulateTitleFilters(t *testing.T) {
 
 // TesAWSCreateFilter tests the API call to the Inspector Clients CreateFilter function
 func TestAWSCreateFilter (t *testing.T){
+    expectedARN := "mytestARN"
+	// Create Test Pipeline
+	testPipeline := InspectorFilterPipeline{}
 
+	// Create the mockClient and context
+	var mockClient mockCreateFilterAPI
+    ctx:=context.TODO()
+
+    // Callout to the SUT passing in the mock client
+	testPipeline.ProcessFilterRequest(mockClient,ctx)
+    actualResult := *testPipeline.FilterResponse.Arn
+    if actualResult != expectedARN {
+    	t.Errorf("Error unexpected ARN expecting %s got %s", expectedARN,*testPipeline.FilterResponse.Arn)
+	}
 }

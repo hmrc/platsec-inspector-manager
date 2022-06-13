@@ -97,9 +97,11 @@ func TestAWSCreateFilter (t *testing.T){
 }
 
 // TestCreateTypeCategoryFilterRequest test creation of
-/*
+
 func TestCreateTypeCategoryFilterRequest(t *testing.T){
-	categoryTypes := getFilterOnTypeCategory("","EQUALS")
+	categoryType := getFilterOnTypeCategory("","EQUALS")
+	categoryTypes := []types.StringFilter{}
+	categoryTypes = append(categoryTypes, categoryType)
     testCases := []struct {
     	name string
     	input InspectorFilterPipeline
@@ -111,8 +113,19 @@ func TestCreateTypeCategoryFilterRequest(t *testing.T){
 			want: inspector2.CreateFilterInput{},
 		},
 	}
+
+	for _, tc := range testCases {
+		actual := tc.input.CreateTypeCategoryFilterRequest()
+		if actual.Action != tc.input.Action {
+			t.Errorf("Expected %s, but got %s", actual.Action, tc.input.Action)
+		}
+
+		if len(actual.TypeCategoryFilters) == 0 {
+			t.Errorf("Expected %d got %d", len(tc.input.TypeCategoryFilters), len(actual.TypeCategoryFilters))
+		}
+	}
 }
- */
+
 
 func TestCreateVulnerabilityIdFilterRequest(t *testing.T){
 	testCases := []struct {

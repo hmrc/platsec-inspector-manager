@@ -1,13 +1,13 @@
 package clients
 
 import (
-	"fmt"
 	"context"
+	"fmt"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
-	"github.com/aws/aws-sdk-go-v2/service/sts"
 	"github.com/aws/aws-sdk-go-v2/credentials"
 	"github.com/aws/aws-sdk-go-v2/service/inspector2"
+	"github.com/aws/aws-sdk-go-v2/service/sts"
 	//"github.com/spf13/viper"
 )
 
@@ -77,11 +77,8 @@ func NewSTSClientSessionConfig() func(stsCredentials *UserInput) *sts.Client {
     }
 }
 
-
-
-
-//
-func (u *UserInput) SetRole(targetAccount string, account string, roleName string) {
+// SetRole formats the role name to be used
+func (u *UserInput) SetRole(account string, roleName string) {
     roleToAssume := fmt.Sprintf("arn:aws:iam::%s:role/%s", account, roleName)
     u.ServiceCredentials.AssumedRole = roleToAssume
 }

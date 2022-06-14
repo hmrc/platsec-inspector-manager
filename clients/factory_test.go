@@ -23,6 +23,7 @@ func TestUserInput_GetSerialNumber(t *testing.T) {
 
 // tests setting the role 
 func TestSetRole(t *testing.T) {
+	userData := UserInput{}
 	testCases := []struct {
 		name string
 		account string
@@ -35,9 +36,9 @@ func TestSetRole(t *testing.T) {
 		expected: "arn:aws:iam::118949222011:role/RoleSecurityAdministrator"},
 	}
 	for _, tc := range testCases {
-		actual := UserInput.SetRole(tc.account, tc.roleName)
-		if *actual != tc.expected {
-			t.Errorf("Test Failed expected %s got %s", *actual, tc.expected)
+		userData.SetRole(tc.account, tc.roleName)
+		if userData.ServiceCredentials.AssumedRole != tc.expected {
+			t.Errorf("Test Failed expected %s got %s", userData.ServiceCredentials.AssumedRole, tc.expected)
 		}
 	}
 

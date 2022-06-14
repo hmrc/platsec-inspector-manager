@@ -11,13 +11,6 @@ type InspectorConfig struct {
 	RoleName string 
 }
 
-/*
-	1) Create a InspectorConfig object this will be your expected
-    2) Set the Account and role name to be of values that you would expect
-    3) In the test call the function to get your actual
-    4) Then you can test if expected.Account == actual.Account
-    5) Also test for Rolename
- */
 func InitConfig() InspectorConfig {
 
 	viper.SetConfigName("config") //name for config file

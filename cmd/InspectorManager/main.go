@@ -1,15 +1,15 @@
 package main
 import (
-	"fmt"
-	"os"
 	"context"
 	"flag"
-	"github.com/platsec-inspector-manager/configmanagement"
-	"github.com/platsec-inspector-manager/clients"
-	"github.com/platsec-inspector-manager/security"
-	"github.com/platsec-inspector-manager/auditing"
-	"github.com/platsec-inspector-manager/inspector"
+	"fmt"
 	"github.com/aws/aws-sdk-go-v2/service/inspector2/types"
+	"github.com/platsec-inspector-manager/auditing"
+	"github.com/platsec-inspector-manager/clients"
+	"github.com/platsec-inspector-manager/configmanagement"
+	"github.com/platsec-inspector-manager/inspector"
+	"github.com/platsec-inspector-manager/security"
+	"os"
 )
 
 func main() {
@@ -25,7 +25,11 @@ func main() {
 	vulnerabilityId := flag.String("vulnerability-id", "", "vulnerability ID (CVE-2021-3711)")
 	flag.Parse()
 
-	configValues := configmanagement.InitConfig()
+	// Load in config from file
+	configValues,err := configmanagement.InitConfig()
+	if err != nil {
+		os.Exit(1)
+	}
 
 	myUserInput := clients.UserInput{
 		AwsAccount: *awsAccount,
@@ -50,7 +54,7 @@ func main() {
 	stsFactory := clients.NewSTSClientFactory()
 	stsClient := stsFactory(myUserInput.UserConfig)
 
-	err := security.GetAWSSessionToken(&myUserInput, stsClient)
+	err = security.GetAWSSessionToken(&myUserInput, stsClient)
 
 	if err != nil {
 		auditing.Log(err.Error())

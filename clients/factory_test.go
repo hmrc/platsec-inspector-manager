@@ -21,7 +21,7 @@ func TestUserInput_GetSerialNumber(t *testing.T) {
 	}
 }
 
-// tests setting the role 
+// TestSetRole tests setting the role
 func TestSetRole(t *testing.T) {
 	userData := UserInput{}
 	testCases := []struct {

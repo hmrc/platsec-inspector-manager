@@ -9,29 +9,34 @@ type InspectorConfigTest struct {
 	RoleName string 
 }
 
-
-
+// TestInitConfig tests that config is being read
 func TestInitConfig (t *testing.T){
 	
 	testCases:= []struct{
 		name string
-		Account string
-		RoleName string
+		account string
+		roleName string
 		expected string
+		configError error
+
 	}{
 		{
-			name: "TestInitConfig",
-			Account: "118949222011",
-			RoleName: "RoleSecurityAdministrator",
-			expected: ,
+			name: "TestInitConfigMissingFile",
+			account: "",
+			roleName: "",
 		},
 	}
 
 	for _, tc := range testCases{
-		actual := InitConfig()
-		if *actual.Value != *tc.expected.Value {
-			t.Errorf("Error expected %s but got %s",*tc.expected.Value,*actual.Value)
-		}
+		actual, _ := InitConfig()
+
+		if actual.Account != tc.account {
+				t.Errorf("Error expected %s but got %s",tc.account,actual.Account)
+			}
+
+			if actual.RoleName != tc.roleName {
+				t.Errorf("Error expected %s but got %s", tc.roleName, actual.RoleName)
+			}
 	}
 }
 

@@ -1,10 +1,13 @@
 package clients
 
 import (
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/service/inspector2"
+	"github.com/aws/aws-sdk-go-v2/service/sts"
 	"testing"
 )
 
-// Tests the formatting of serial numbers
+// TestUserInput_GetSerialNumber Tests the formatting of serial numbers
 func TestUserInput_GetSerialNumber(t *testing.T) {
 	testCases := []struct{
 		name string
@@ -42,4 +45,53 @@ func TestSetRole(t *testing.T) {
 		}
 	}
 
+}
+
+// TestNewInspectorClientFactory test if a factory is being returned
+func TestNewInspectorClientFactory(t *testing.T){
+   testCases := []struct {
+   	  name string
+   	  expected bool
+   }{
+   	{
+   		name: "ValidFactory",
+		expected: true,
+	},
+   }
+	for _, tc := range testCases {
+		actual := isType(NewInspectorClientFactory())
+        if actual != tc.expected {
+			t.Errorf("Expected %v got %v",tc.expected,actual)
+		}
+	}
+}
+
+// TestNewSTSClientFactory test if a factory is being returned
+func TestNewSTSClientFactory(t *testing.T){
+	testCases := []struct {
+		name string
+		expected bool
+	}{
+		{
+			name: "ValidFactory",
+			expected: true,
+		},
+	}
+	for _, tc := range testCases {
+		actual := isType(NewSTSClientFactory())
+		if actual != tc.expected {
+			t.Errorf("Expected %v got %v",tc.expected,actual)
+		}
+	}
+}
+// isType checks for type
+func isType(t interface{}) bool{
+	switch t.(type) {
+	case func(cfg aws.Config, stsCredentials UserInput) *inspector2.Client:
+		return true
+	case func(cfg aws.Config) *sts.Client:
+		return true
+	default:
+		return false
+	}
 }

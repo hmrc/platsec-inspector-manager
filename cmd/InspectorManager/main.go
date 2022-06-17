@@ -13,6 +13,8 @@ import (
 )
 
 func main() {
+	var logerr error
+
 	awsAccount := flag.String("account", "", "AWS account")
 	username := flag.String("username", "", "AWS username")
 	region := flag.String("region", "eu-west-2", "AWS region")
@@ -57,19 +59,25 @@ func main() {
 	err = security.GetAWSSessionToken(&myUserInput, stsClient)
 
 	if err != nil {
-		auditing.Log(err.Error())
+		logerr = auditing.Log(err.Error())
+		if logerr != nil {
+			fmt.Printf("A logging error was caught %s", logerr)
+		}
 		os.Exit(1)
 	}
 
 	stsServiceFactory := clients.NewSTSClientSessionConfig()
     err = security.AssumeAccountRole(&myUserInput, stsServiceFactory, myUserInput.AwsAccount)
 	if err!= nil {
-		auditing.Log(err.Error())
+		logerr = auditing.Log(err.Error())
+		if logerr != nil {
+			fmt.Printf("A logging error was caught %s", logerr)
+		}
 		os.Exit(1)
 	}
 
 	inspectorFactory := clients.NewInspectorClientFactory()
-    inspectorClient := inspectorFactory(myUserInput.UserConfig, *&myUserInput)
+    inspectorClient := inspectorFactory(myUserInput.UserConfig, myUserInput)
 
 	filterPipeline := inspector.InspectorFilterPipeline{
         AWSAccounts: []string{myUserInput.AwsAccount},
@@ -80,7 +88,10 @@ func main() {
 	filterPipeline.PopulateAccountFilters(myUserInput.ComparisonOperator).CreateAccountFilterRequest().ProcessFilterRequest(inspectorClient, myUserInput.UserContext)
 	if filterPipeline.FilterError != nil {
 		fmt.Printf("Error processing pipeline %s", filterPipeline.FilterError.Error())
-		auditing.Log(filterPipeline.FilterError.Error())
+		logerr = auditing.Log(filterPipeline.FilterError.Error())
+		if logerr != nil {
+			fmt.Printf("A logging error was caught %s", logerr)
+		}
 		fmt.Printf("Filter Output %s", *filterPipeline.FilterResponse.Arn)
 	}	
 }

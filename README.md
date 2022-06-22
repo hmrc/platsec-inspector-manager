@@ -24,10 +24,16 @@ Where
  - filter-type can be cve, awsAccounts or typeCategory
  - mfa-token is the token for mfa 
 
-###Setup
+### Setup
 There is a config.yml file within the root of the project that has a section entitled aws
 You must enter the account number for account setting where you want the suppression rule to be added (Cloudtrail account).
 You must also supply the rolename that has permissions to add the suppression rule normally this is RoleSecurityAdministrator.
+
+You must create the config.yml file in the project root with the following content
+
+aws:
+    account: "<AWS Account number where rule to be applied>"
+    rolename: "<Name of role to assume>"
 
 You must have a profile setup for your webops account.
 ### Version 1.0.0

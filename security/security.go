@@ -1,8 +1,8 @@
 package security
 
-import(
-	"github.com/platsec-inspector-manager/clients"
+import (
 	"github.com/aws/aws-sdk-go-v2/service/sts"
+	"github.com/platsec-inspector-manager/clients"
 )
 
 // GetAWSSessionToken gets a valid aws session token.
@@ -27,7 +27,7 @@ func GetAWSSessionToken(userCredentials *clients.UserInput, stsClient *sts.Clien
 func AssumeAccountRole(userCredentials *clients.UserInput, factory func(stsCredentials *clients.UserInput) *sts.Client,
 	targetAccount string) error {
 	stsClient := factory(userCredentials)
-	userCredentials.SetRole(targetAccount, userCredentials.Account, userCredentials.RoleName)
+	userCredentials.SetRole(userCredentials.Account, userCredentials.RoleName)
 	assumeRoleResult, err := stsClient.
 		AssumeRole(userCredentials.UserContext, &sts.AssumeRoleInput{
 			DurationSeconds: &userCredentials.SessionDuration,

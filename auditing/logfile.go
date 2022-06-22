@@ -6,7 +6,7 @@ import (
     "os"
 )
 // Log logs information using the standard Go logger package
-func Log(logMessage string) {
+func Log(logMessage string) error{
     buf := bytes.Buffer{}
     logger := log.New(&buf, "AWSinspector", log.Lshortfile|log.Ldate)
     logFile, err := getLogFile()
@@ -16,7 +16,13 @@ func Log(logMessage string) {
     logger.SetOutput(logFile)
     logger.Println(logMessage)
     logger.SetPrefix("new logger:")
-    closeLogFile(logFile)
+    err = closeLogFile(logFile)
+
+    if err != nil {
+        return err
+    }
+
+    return nil
 }
 // getLogFile returns a pointer to a file for logging
 func getLogFile() (*os.File, error) {

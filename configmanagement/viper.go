@@ -6,33 +6,36 @@ import (
 	"os"
 )
 
+// InspectorConfig holds configuration items loaded from file
 type InspectorConfig struct {
 	Account string
 	RoleName string 
 }
 
-
-func InitConfig() InspectorConfig {
-
+// InitConfig loads the configuration from a file.
+func InitConfig() (InspectorConfig, error){
+    configDetails := InspectorConfig{}
 	viper.SetConfigName("config") //name for config file
 	viper.SetConfigType("yaml") //file extension type 
 	viper.AddConfigPath("../")  
-	viper.ReadInConfig()
+	err := viper.ReadInConfig()
 
-	if err := viper.ReadInConfig(); err != nil {
+	if err != nil {
+		os.Exit(1)
+	}
+
+	if err = viper.ReadInConfig(); err != nil {
 		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
-			fmt.Println("error config file not found: default \n", err)
+			return configDetails, err
 		}
 		
-	if err != nil { // Handle errors reading the config file
-		fmt.Println("fatal error config file: default \n", err)
-        os.Exit(1)
+		if err != nil { // Handle errors reading the config file
+			fmt.Println("fatal error config file: default \n", err)
+        	os.Exit(1)
+		}
 	}
-} 
 
-return InspectorConfig{
-	Account: viper.GetString("aws.account"),
-	RoleName: viper.GetString("aws.rolename"),
-}
-
+	configDetails.Account = viper.GetString("aws.account")
+	configDetails.RoleName = viper.GetString("aws.rolename")
+	return configDetails, nil
 }

@@ -31,9 +31,10 @@ You must also supply the rolename that has permissions to add the suppression ru
 
 You must create the config.yml file in the project root with the following content
 
-aws:
-    account: "<AWS Account number where rule to be applied>"
-    rolename: "<Name of role to assume>"
+***
+    aws 
+        account: "<AWS Account number where rule to be applied>"
+        rolename: "<Name of role to assume>"
 
 You must have a profile setup for your webops account.
 ### Version 1.0.0

@@ -1,6 +1,7 @@
-package configmanagement
+package configmanagement_test
 
 import (
+	"github.com/platsec-inspector-manager/configmanagement"
 	"testing"
 )
 
@@ -28,7 +29,7 @@ func TestInitConfig (t *testing.T){
 	}
 
 	for _, tc := range testCases{
-		actual, _ := InitConfig()
+		actual, _ := configmanagement.InitConfig()
 
 		if actual.Account != tc.account {
 				t.Errorf("Error expected %s but got %s",tc.account,actual.Account)

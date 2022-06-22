@@ -1,9 +1,10 @@
-package clients
+package clients_test
 
 import (
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/inspector2"
 	"github.com/aws/aws-sdk-go-v2/service/sts"
+	"github.com/platsec-inspector-manager/clients"
 	"testing"
 )
 
@@ -11,10 +12,10 @@ import (
 func TestUserInput_GetSerialNumber(t *testing.T) {
 	testCases := []struct{
 		name string
-		input UserInput
+		input clients.UserInput
 		expected string
 	}{
-		{name: "SerialNumberValid",input: UserInput{AwsAccount: "13423425",Username: "mark.teasdale"},expected: "arn:aws:iam::13423425:mfa/mark.teasdale"},
+		{name: "SerialNumberValid",input: clients.UserInput{AwsAccount: "13423425",Username: "mark.teasdale"},expected: "arn:aws:iam::13423425:mfa/mark.teasdale"},
 	}
 	for _, tc := range testCases {
 		actual := tc.input.GetSerialNumber()
@@ -26,7 +27,7 @@ func TestUserInput_GetSerialNumber(t *testing.T) {
 
 // TestSetRole tests setting the role
 func TestSetRole(t *testing.T) {
-	userData := UserInput{}
+	userData := clients.UserInput{}
 	testCases := []struct {
 		name string
 		account string
@@ -59,7 +60,7 @@ func TestNewInspectorClientFactory(t *testing.T){
 	},
    }
 	for _, tc := range testCases {
-		actual := isType(NewInspectorClientFactory())
+		actual := isType(clients.NewInspectorClientFactory())
         if actual != tc.expected {
 			t.Errorf("Expected %v got %v",tc.expected,actual)
 		}
@@ -78,7 +79,7 @@ func TestNewSTSClientFactory(t *testing.T){
 		},
 	}
 	for _, tc := range testCases {
-		actual := isType(NewSTSClientFactory())
+		actual := isType(clients.NewSTSClientFactory())
 		if actual != tc.expected {
 			t.Errorf("Expected %v got %v",tc.expected,actual)
 		}
@@ -87,7 +88,7 @@ func TestNewSTSClientFactory(t *testing.T){
 // isType checks for type
 func isType(t interface{}) bool{
 	switch t.(type) {
-	case func(cfg aws.Config, stsCredentials UserInput) *inspector2.Client:
+	case func(cfg aws.Config, stsCredentials clients.UserInput) *inspector2.Client:
 		return true
 	case func(cfg aws.Config) *sts.Client:
 		return true

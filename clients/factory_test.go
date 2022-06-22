@@ -85,12 +85,39 @@ func TestNewSTSClientFactory(t *testing.T){
 		}
 	}
 }
+
+// TestDefaultConfig test SetDefaultConfig
+func TestDefaultConfig(t *testing.T){
+	testCases := []struct {
+		name string
+		userInput clients.UserInput
+		expected aws.Config
+		expectedType bool
+	}{
+		{
+			name: "ValidUserConfig",
+			userInput: clients.UserInput{},
+			expected: aws.Config{},
+			expectedType: true,
+		},
+	}
+	for _, tc := range testCases {
+		tc.userInput.SetDefaultConfig()
+		actual := isType(tc.userInput.UserConfig)
+		if actual != tc.expectedType {
+			t.Errorf("Expected %v got %v",tc.expectedType,actual)
+		}
+	}
+}
+
 // isType checks for type
 func isType(t interface{}) bool{
 	switch t.(type) {
 	case func(cfg aws.Config, stsCredentials clients.UserInput) *inspector2.Client:
 		return true
 	case func(cfg aws.Config) *sts.Client:
+		return true
+	case aws.Config:
 		return true
 	default:
 		return false

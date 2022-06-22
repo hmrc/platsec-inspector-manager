@@ -5,46 +5,66 @@ import (
 	"testing"
 )
 
+// InspectorConfigTest test struct for holding testing data
 type InspectorConfigTest struct {
 	Account string
 	RoleName string 
 }
 
-// TestInitConfig tests that config is being read
-func TestInitConfig (t *testing.T){
+// TestInitConfigErrorCases tests that config is being read
+func TestInitConfigErrorCases (t *testing.T){
 	
 	testCases:= []struct{
 		name string
-		account string
-		roleName string
-		expected string
-		configError error
-
+		fileName string
+		fileType string
+		fileLocation string
 	}{
 		{
 			name: "TestInitConfigMissingFile",
-			account: "",
-			roleName: "",
+			fileName: "invalidname",
+			fileType: "yaml",
+			fileLocation: "../",
+		},
+		{
+			name: "TestInitConfigBadFileFormat",
+			fileName: "config",
+			fileType: "invalidformat",
+			fileLocation: "../",
 		},
 	}
 
 	for _, tc := range testCases{
-		actual, _ := configmanagement.InitConfig()
+		_ , actual := configmanagement.InitConfig(tc.fileName,tc.fileType,tc.fileLocation)
 
-		if actual.Account != tc.account {
-				t.Errorf("Error expected %s but got %s",tc.account,actual.Account)
-			}
-
-			if actual.RoleName != tc.roleName {
-				t.Errorf("Error expected %s but got %s", tc.roleName, actual.RoleName)
-			}
+		if actual == nil {
+			t.Errorf("Test %s failed expecting an error but got %v", tc.name,actual)
+		}
 	}
 }
 
-/*
-	1) Create a InspectorConfig object this will be your expected
-    2) Set the Account and role name to be of values that you would expect
-    3) In the test call the function to get your actual
-    4) Then you can test if expected.Account == actual.Account
-    5) Also test for Rolename
- */
+// TestInitConfigCases tests that config is being read
+func TestInitConfigCases (t *testing.T){
+
+	testCases:= []struct{
+		name string
+		fileName string
+		fileType string
+		fileLocation string
+	}{
+		{
+			name: "TestInitConfigValidFile",
+			fileName: "config",
+			fileType: "yaml",
+			fileLocation: "../",
+		},
+	}
+
+	for _, tc := range testCases{
+		_ , actual := configmanagement.InitConfig(tc.fileName,tc.fileType,tc.fileLocation)
+
+		if actual != nil {
+			t.Errorf("Test %s failed expecting an no error but got %v", tc.name,actual)
+		}
+	}
+}

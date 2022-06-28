@@ -97,7 +97,6 @@ func TestAWSCreateFilter (t *testing.T){
 }
 
 // TestCreateTypeCategoryFilterRequest test creation of
-
 func TestCreateTypeCategoryFilterRequest(t *testing.T){
 	categoryType := getFilterOnTypeCategory("","EQUALS")
 	categoryTypes := []types.StringFilter{}
@@ -126,7 +125,7 @@ func TestCreateTypeCategoryFilterRequest(t *testing.T){
 	}
 }
 
-
+// TestCreateVulnerabilityIdFilterRequest tests creating a vulnerability id filter request
 func TestCreateVulnerabilityIdFilterRequest(t *testing.T){
 	testCases := []struct {
 		name string
@@ -144,6 +143,31 @@ func TestCreateVulnerabilityIdFilterRequest(t *testing.T){
 		actual := tc.input.CreateVulnerabilityIdFilterRequest()
 		if actual.Action != tc.want.Action{
 			t.Errorf("Wanted %s got %s",tc.want.Action,actual.Action)
+		}
+	}
+}
+
+//TestGetFilterOnCVETitle tests GetFilterOnCVETitle
+func TestCreateGetFilterOnCVETitle(t *testing.T){
+	testCases := []struct {
+		name string
+		cvetile string
+		comparisonOperator string
+		expected bool
+	}{
+		{
+			name : "ValidParameters",
+			cvetile: "testCVE",
+			comparisonOperator: "EQUALS",
+			expected: true,
+		},
+	}
+
+	for _, tc := range testCases {
+		actual := GetFilterOnCVETitle(tc.cvetile, tc.comparisonOperator)
+		if *actual.Value != tc.cvetile {
+			t.Errorf("Error in test %s expecting %s, %s but got %s, %s", tc.name,tc.cvetile,
+				tc.comparisonOperator, *actual.Value, actual.Comparison)
 		}
 	}
 }

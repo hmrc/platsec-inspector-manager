@@ -171,3 +171,31 @@ func TestCreateGetFilterOnCVETitle(t *testing.T){
 		}
 	}
 }
+
+// TestPopulateTypeCategoryFilters tests the ability to create TypeCategoryFilter
+func TestPopulateTypeCategoryFilters (t *testing.T){
+	testFilterPipeline := InspectorFilterPipeline{}
+	testCases := []struct{
+		name string
+		comparisonOperator string
+		expected int
+		typeCategory string
+	}{
+		{
+			name :"TestPopulateTypeCategoryFiltersValidComparisonOperator",
+			comparisonOperator: "EQUALS",
+			expected: 1,
+			typeCategory: "validType",
+		},
+	}
+
+	for _, tc:= range testCases {
+		testFilterPipeline.TypeCategory = tc.typeCategory
+		testFilterPipeline.PopulateTypeCategoryFilters(tc.comparisonOperator)
+
+		if len(testFilterPipeline.TypeCategoryFilters) != tc.expected {
+			t.Errorf("Test %s failed expected %d got %d", tc.name,
+				tc.expected, len(testFilterPipeline.TypeCategoryFilters))
+		}
+	}
+}

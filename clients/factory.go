@@ -48,9 +48,16 @@ type Credentials struct {
 }
 
 // SetDefaultConfig loads up the credentials from the .aws folder
-func (u *UserInput) SetDefaultConfig() {
-	u.UserConfig, _ = config.LoadDefaultConfig(u.UserContext,
+func (u *UserInput) SetDefaultConfig() error {
+	 awsConfig, err := config.LoadDefaultConfig(u.UserContext,
 		config.WithSharedConfigProfile(u.Profile), config.WithRegion(u.Region))
+
+	if err != nil {
+		return err
+	}
+
+	u.UserConfig = awsConfig
+	return  nil
 }
 
 //

@@ -12,6 +12,11 @@ import (
 	"os"
 )
 
+// Constants for Configuration file
+const fileName = "config"
+const fileType = "yaml"
+const fileLocation = "../"
+
 func main() {
 	var logerr error
 
@@ -28,7 +33,7 @@ func main() {
 	flag.Parse()
 
 	// Load in config from file
-	configValues,err := configmanagement.InitConfig()
+	configValues,err := configmanagement.InitConfig(fileName,fileType,fileLocation)
 	if err != nil {
 		os.Exit(1)
 	}
@@ -51,7 +56,13 @@ func main() {
 		SessionName: "inspector",
 	}
 
-	myUserInput.SetDefaultConfig()
+
+	err = myUserInput.SetDefaultConfig()
+	if err!= nil {
+		logerr = auditing.Log(err.Error())
+		os.Exit(1)
+	}
+
 	// Get Session Token
 	stsFactory := clients.NewSTSClientFactory()
 	stsClient := stsFactory(myUserInput.UserConfig)

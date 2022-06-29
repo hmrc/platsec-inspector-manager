@@ -1,9 +1,7 @@
 package configmanagement
 
 import (
-	"fmt"
 	"github.com/spf13/viper"
-	"os"
 )
 
 // InspectorConfig holds configuration items loaded from file
@@ -13,26 +11,15 @@ type InspectorConfig struct {
 }
 
 // InitConfig loads the configuration from a file.
-func InitConfig() (InspectorConfig, error){
+func InitConfig(fileName string, fileType string, fileLocation string) (InspectorConfig, error){
     configDetails := InspectorConfig{}
-	viper.SetConfigName("config") //name for config file
-	viper.SetConfigType("yaml") //file extension type 
-	viper.AddConfigPath("../")  
+	viper.SetConfigName(fileName) //name for config file
+	viper.SetConfigType(fileType) //file extension type
+	viper.AddConfigPath(fileLocation)
 	err := viper.ReadInConfig()
 
 	if err != nil {
-		os.Exit(1)
-	}
-
-	if err = viper.ReadInConfig(); err != nil {
-		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
-			return configDetails, err
-		}
-		
-		if err != nil { // Handle errors reading the config file
-			fmt.Println("fatal error config file: default \n", err)
-        	os.Exit(1)
-		}
+		return configDetails, err
 	}
 
 	configDetails.Account = viper.GetString("aws.account")

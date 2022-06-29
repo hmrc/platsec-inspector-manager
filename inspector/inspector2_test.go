@@ -97,7 +97,6 @@ func TestAWSCreateFilter (t *testing.T){
 }
 
 // TestCreateTypeCategoryFilterRequest test creation of
-
 func TestCreateTypeCategoryFilterRequest(t *testing.T){
 	categoryType := getFilterOnTypeCategory("","EQUALS")
 	categoryTypes := []types.StringFilter{}
@@ -126,7 +125,7 @@ func TestCreateTypeCategoryFilterRequest(t *testing.T){
 	}
 }
 
-
+// TestCreateVulnerabilityIdFilterRequest tests creating a vulnerability id filter request
 func TestCreateVulnerabilityIdFilterRequest(t *testing.T){
 	testCases := []struct {
 		name string
@@ -144,6 +143,93 @@ func TestCreateVulnerabilityIdFilterRequest(t *testing.T){
 		actual := tc.input.CreateVulnerabilityIdFilterRequest()
 		if actual.Action != tc.want.Action{
 			t.Errorf("Wanted %s got %s",tc.want.Action,actual.Action)
+		}
+	}
+}
+
+//TestGetFilterOnCVETitle tests GetFilterOnCVETitle
+func TestCreateGetFilterOnCVETitle(t *testing.T){
+	testCases := []struct {
+		name string
+		cvetile string
+		comparisonOperator string
+		expected bool
+	}{
+		{
+			name : "ValidParameters",
+			cvetile: "testCVE",
+			comparisonOperator: "EQUALS",
+			expected: true,
+		},
+	}
+
+	for _, tc := range testCases {
+		actual := GetFilterOnCVETitle(tc.cvetile, tc.comparisonOperator)
+		if *actual.Value != tc.cvetile {
+			t.Errorf("Error in test %s expecting %s, %s but got %s, %s", tc.name,tc.cvetile,
+				tc.comparisonOperator, *actual.Value, actual.Comparison)
+		}
+	}
+}
+
+// TestPopulateTypeCategoryFilters tests the ability to create TypeCategoryFilter
+func TestPopulateTypeCategoryFilters (t *testing.T){
+	testFilterPipeline := InspectorFilterPipeline{}
+	testCases := []struct{
+		name string
+		comparisonOperator string
+		expected int
+		typeCategory string
+	}{
+		{
+			name :"TestPopulateTypeCategoryFiltersValidComparisonOperator",
+			comparisonOperator: "EQUALS",
+			expected: 1,
+			typeCategory: "validType",
+		},
+	}
+
+	for _, tc:= range testCases {
+		testFilterPipeline.TypeCategory = tc.typeCategory
+		testFilterPipeline.PopulateTypeCategoryFilters(tc.comparisonOperator)
+
+		if len(testFilterPipeline.TypeCategoryFilters) != tc.expected {
+			t.Errorf("Test %s failed expected %d got %d", tc.name,
+				tc.expected, len(testFilterPipeline.TypeCategoryFilters))
+		}
+	}
+}
+
+// TestCreateAccountFilterRequest tests the creation of filter request
+func TestCreateAccountFilterRequest (t *testing.T){
+	testFilterValue := "validValue"
+	testFilterPipeline := InspectorFilterPipeline{}
+	testCases := []struct{
+		name string
+		action types.FilterAction
+		filter  types.StringFilter
+		filterName string
+		expected bool
+	}{
+		{
+			name:"TestCreateAccountFilterValidRequest",
+			action: "validTestAction",
+			filter: types.StringFilter{Comparison: "EQUALS",Value: &testFilterValue},
+			filterName: "testFilterName",
+			expected: true,
+		},
+	}
+
+	for _, tc := range testCases {
+		testFilterPipeline.FilterName = tc.filterName
+		testFilterPipeline.Action = tc.action
+		testFilterPipeline.AccountFilters = append(testFilterPipeline.AccountFilters, tc.filter)
+
+		testFilterPipeline.CreateAccountFilterRequest()
+
+		if testFilterPipeline.FilterRequest == nil {
+			t.Errorf("Test %s failed expected %v a Filter request but got %v",tc.name,
+				tc.expected, false)
 		}
 	}
 }

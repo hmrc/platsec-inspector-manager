@@ -83,7 +83,7 @@ func (i *InspectorFilterPipeline) PopulateTypeCategoryFilters(comparisonOperator
 	var typeCategoryFilters []types.StringFilter
 	if i.TypeCategory != "" {
 		typeCategoryFilter := getFilterOnTypeCategory(i.TypeCategory, comparisonOperator)
-		typeCategoryFilters[0] = typeCategoryFilter
+		typeCategoryFilters = append(typeCategoryFilters,typeCategoryFilter)
 	}
 	i.TypeCategoryFilters = typeCategoryFilters
 	return i

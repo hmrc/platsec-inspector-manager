@@ -199,3 +199,37 @@ func TestPopulateTypeCategoryFilters (t *testing.T){
 		}
 	}
 }
+
+// TestCreateAccountFilterRequest tests the creation of filter request
+func TestCreateAccountFilterRequest (t *testing.T){
+	testFilterValue := "validValue"
+	testFilterPipeline := InspectorFilterPipeline{}
+	testCases := []struct{
+		name string
+		action types.FilterAction
+		filter  types.StringFilter
+		filterName string
+		expected bool
+	}{
+		{
+			name:"TestCreateAccountFilterValidRequest",
+			action: "validTestAction",
+			filter: types.StringFilter{Comparison: "EQUALS",Value: &testFilterValue},
+			filterName: "testFilterName",
+			expected: true,
+		},
+	}
+
+	for _, tc := range testCases {
+		testFilterPipeline.FilterName = tc.filterName
+		testFilterPipeline.Action = tc.action
+		testFilterPipeline.AccountFilters = append(testFilterPipeline.AccountFilters, tc.filter)
+
+		testFilterPipeline.CreateAccountFilterRequest()
+
+		if testFilterPipeline.FilterRequest == nil {
+			t.Errorf("Test %s failed expected %v a Filter request but got %v",tc.name,
+				tc.expected, false)
+		}
+	}
+}

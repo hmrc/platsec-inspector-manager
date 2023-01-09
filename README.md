@@ -1,6 +1,6 @@
 # Platsec-Inspector-Manager
 
-PlatSec Inspector Manager is Golang command line tool that enables PlatSec Team members
+PlatSec Inspector Manager is a Golang command line tool that enables PlatSec Team members
 to create suppression rules in AWS Inspector.
 
 The requirements and in depth specification of the tool can be found
